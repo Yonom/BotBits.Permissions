@@ -2,13 +2,8 @@
 
 namespace BotBits.Permissions
 {
-    public sealed class PermissionManager : Package<PermissionManager>
+    public sealed class PermissionManager : EventListenerPackage<PermissionManager>
     {
-        public PermissionManager()
-        {
-            EventLoader.Of(this.BotBits).Load(this);
-        }
-
         [EventListener(EventPriority.High)]
         private void OnJoin(JoinEvent e)
         {
@@ -16,7 +11,7 @@ namespace BotBits.Permissions
                 (o, args) =>
                 {
                     if (args.Key == "Group")
-                        new ChangedPermissionEvent(e.Player, (Group)args.OldValue,
+                        new PermissionEvent(e.Player, (Group)args.OldValue,
                             (Group)args.NewValue)
                             .RaiseIn(this.BotBits);
                 };

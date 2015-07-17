@@ -1,8 +1,8 @@
 ﻿namespace BotBits.Permissions
 {
-    public sealed class ChangedPermissionEvent : Event<ChangedPermissionEvent>
+    public sealed class PermissionEvent : Event<PermissionEvent>
     {
-        internal ChangedPermissionEvent(Player player, Group oldPermission, Group newPermission)
+        internal PermissionEvent(Player player, Group oldPermission, Group newPermission)
         {
             this.Player = player;
             this.OldPermission = oldPermission;

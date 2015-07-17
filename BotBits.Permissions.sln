@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BotBits.Permissions", "BotB
 EndProject
 Project("{FF286327-C783-4F7A-AB73-9BCBAD0D4460}") = "BotBits.Permissions.NuGet", "BotBits.Permissions.NuGet\BotBits.Permissions.NuGet.nuproj", "{547D6A46-E6C4-477A-B774-9562164884BF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BotBits.Permissions.Demo", "BotBits.Permissions.Demo\BotBits.Permissions.Demo.csproj", "{62B276D9-6143-4E3C-9BE4-A1069CAD16CC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{547D6A46-E6C4-477A-B774-9562164884BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{547D6A46-E6C4-477A-B774-9562164884BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{547D6A46-E6C4-477A-B774-9562164884BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62B276D9-6143-4E3C-9BE4-A1069CAD16CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62B276D9-6143-4E3C-9BE4-A1069CAD16CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62B276D9-6143-4E3C-9BE4-A1069CAD16CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62B276D9-6143-4E3C-9BE4-A1069CAD16CC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
