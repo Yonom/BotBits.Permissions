@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using BotBits.ChatExtras;
 using BotBits.Commands;
 using BotBits.Events;
 
@@ -17,12 +18,13 @@ namespace BotBits.Permissions.Demo
             CommandsExtension.LoadInto(bot, '!');
             CommandLoader.Of(bot).LoadStatic<Program>();
 
+            ChatExtrasExtension.LoadInto(bot, new CakeChatSyntaxProvider("Bot"));
             PermissionsExtension.LoadInto(bot, Group.Moderator, new SimplePermissionProvider("processor"));
 
             // Login
             ConnectionManager.Of(bot)
                 .GuestLogin()
-                .CreateJoinRoom("PW01");
+                .CreateJoinRoom("PWAARLDluVa0I");
 
             while (true)
                 CommandManager.Of(bot).ReadNextConsoleCommand();

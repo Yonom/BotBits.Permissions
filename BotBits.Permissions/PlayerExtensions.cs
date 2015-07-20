@@ -36,8 +36,13 @@ namespace BotBits.Permissions
 
         public static string GetDatabaseName(this Player p)
         {
-            if (p.IsGuest) return "-guest-";
-            return p.Username;
+            return GetDatabaseName(p.Username);
+        }
+
+        public static string GetDatabaseName(string username)
+        {
+            if (PlayerUtils.IsGuest(username)) return "-guest-";
+            return username;
         }
 
         internal static PermissionData GetPermissionData(this Player p)
@@ -51,16 +56,6 @@ namespace BotBits.Permissions
             p.SetBanTimeout(permissionData.BanTimeout);
             // Group is last, because of the event that will be fired
             p.SetGroup(permissionData.Group);
-        }
-
-        internal static bool GetPermissionsIniting(this Player p)
-        {
-            return p.Get<bool>("PermissionsIniting");
-        }
-
-        internal static void SetPermissionsIniting(this Player p, bool inited)
-        {
-            p.Set("PermissionsIniting", inited);
         }
     }
 }

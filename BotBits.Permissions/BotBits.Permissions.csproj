@@ -33,11 +33,15 @@
   <ItemGroup>
     <Reference Include="BotBits, Version=1.0.0.0, Culture=neutral, PublicKeyToken=8d4a7b115348c43d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\BotBits.1.3.11\lib\net40\BotBits.dll</HintPath>
+      <HintPath>..\packages\BotBits.1.3.19\lib\net40\BotBits.dll</HintPath>
+    </Reference>
+    <Reference Include="BotBits.ChatExtras, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\BotBits.ChatExtras.1.0.2\lib\net40\BotBits.ChatExtras.dll</HintPath>
     </Reference>
     <Reference Include="BotBits.Commands, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\BotBits.Commands.1.0.4\lib\net40\BotBits.Commands.dll</HintPath>
+      <HintPath>..\packages\BotBits.Commands.1.0.7\lib\net40\BotBits.Commands.dll</HintPath>
     </Reference>
     <Reference Include="PlayerIOClient">
       <HintPath>..\packages\PlayerIOClient-Signed.3.1.0\lib\PlayerIOClient.dll</HintPath>

@@ -21,5 +21,17 @@ namespace BotBits.Permissions
             throw new InvalidInvokeSourceCommandException(
                 "Unable to retrieve your permissions. Command could not be run.");
         }
+
+        public static Group GetGroup(this IInvokeSource source)
+        {
+            try
+            {
+                return source.ToPermissionInvokeSource().Group;
+            }
+            catch (InvalidInvokeSourceCommandException)
+            {
+                return Group.External;
+            }
+        }
     }
 }

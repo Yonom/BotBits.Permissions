@@ -1,4 +1,5 @@
-﻿using BotBits.Events;
+﻿using System;
+using BotBits.Events;
 
 namespace BotBits.Permissions
 {
@@ -47,9 +48,14 @@ namespace BotBits.Permissions
             player.SetGroup(Group.Limited);
         }
 
-        public void Ban(Player player)
+        public void Ban(Player player, string reason)
         {
-            player.SetGroup(Group.Banned);
+            player.SetPermissionData(new PermissionData(Group.Banned, reason, default(DateTime)));
+        }
+
+        public void Ban(Player player, string reason, DateTime timeout)
+        {
+            player.SetPermissionData(new PermissionData(Group.Banned, reason, timeout));
         }
     }
 }
