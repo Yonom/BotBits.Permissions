@@ -1,48 +1,31 @@
 using System;
+using System.Data.Common;
 using System.Data.SQLite;
 
 namespace BotBits.Permissions.Demo.PermissionProviders
 {
-    public class SQLiteDatabasePermissionProvider : DatabasePermissionProvider
+    public class SQLiteDatabasePermissionProvider : SqlDatabasePermissionProvider<SQLiteConnection, SQLiteDataAdapter>
     {
         private readonly string _connectionString;
 
         public SQLiteDatabasePermissionProvider(string connectionString)
         {
             this._connectionString = connectionString;
-            using (var conn = new SQLiteConnection(this._connectionString))
-            {
-                conn.Open();
-                using (var cmd = new SQLiteCommand(
-                    "CREATE TABLE IF NOT EXISTS `BotBitsUsers` ( " +
-                    "`" + Username +"` VARCHAR(50), " +
-                    "`" + Group + "` INTEGER, " +
-                    "`" + BanReason + "` TEXT, " +
-                    "`" + BanTimeout + "` INTEGER, " +
-                    "PRIMARY KEY(Username) " +
-                    ");", conn))
-                    cmd.ExecuteNonQuery();
-
-                using (var adapter = this.GetAdapter(conn)) 
-                    adapter.Fill(this.DataSet);
-            }
         }
 
-        public override void SetDataAsync(string storageName, PermissionData permissionData)
+        public override SQLiteConnection GetConnection()
         {
-            base.SetDataAsync(storageName, permissionData);
-
-            using (var conn = new SQLiteConnection(this._connectionString))
-            using (var adapter = this.GetAdapter(conn))
-            using (new SQLiteCommandBuilder(adapter))
-            {
-                adapter.Update(this.DataSet);
-            }
+            return new SQLiteConnection(this._connectionString);
         }
-        
-        private SQLiteDataAdapter GetAdapter(SQLiteConnection connection)
+
+        public override SQLiteDataAdapter GetAdapter(string selectCommandText, SQLiteConnection connection)
         {
-            return new SQLiteDataAdapter("SELECT * FROM BotBitsUsers", connection);
+            return new SQLiteDataAdapter(selectCommandText, connection);
+        }
+
+        public override DbCommandBuilder GetCommandBuilder(SQLiteDataAdapter adapter)
+        {
+            return new SQLiteCommandBuilder(adapter);
         }
     }
 }

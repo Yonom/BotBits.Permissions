@@ -1,12 +1,80 @@
 ﻿using System;
 using System.Data;
 using System.Data.Common;
-using System.Data.OleDb;
-using System.Linq;
-using PlayerIOClient;
+using System.Data.SqlClient;
 
 namespace BotBits.Permissions
 {
+    public class MsSqlDatabasePermissionProvider : SqlDatabasePermissionProvider<SqlConnection, SqlDataAdapter>
+    {
+        public string ConnectionString { get; private set; }
+
+        public MsSqlDatabasePermissionProvider(string connectionString)
+        {
+            this.ConnectionString = connectionString;
+        }
+
+        public override SqlConnection GetConnection()
+        {
+            return new SqlConnection(this.ConnectionString);
+        }
+
+        public override SqlDataAdapter GetAdapter(string selectCommandText, SqlConnection connection)
+        {
+            return new SqlDataAdapter(selectCommandText, connection);
+        }
+
+        public override DbCommandBuilder GetCommandBuilder(SqlDataAdapter adapter)
+        {
+            return new SqlCommandBuilder(adapter);
+        }
+    }
+
+    public abstract class SqlDatabasePermissionProvider<TDbConnection, TDataAdapter> : DatabasePermissionProvider 
+        where TDbConnection : DbConnection where TDataAdapter : DataAdapter
+    {
+        private const string SelectCommandText = "SELECT * FROM BotBitsUsers";
+
+        protected SqlDatabasePermissionProvider()
+        {
+            using (var conn = this.GetConnection())
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText =
+                        "CREATE TABLE IF NOT EXISTS `BotBitsUsers` ( " +
+                        "`" + Username + "` VARCHAR(50), " +
+                        "`" + Group + "` INTEGER, " +
+                        "`" + BanReason + "` TEXT, " +
+                        "`" + BanTimeout + "` INTEGER, " +
+                        "PRIMARY KEY(Username) " +
+                        ");";
+                    cmd.ExecuteNonQuery();
+                }
+
+                using (var adapter = this.GetAdapter(SelectCommandText, conn))
+                    adapter.Fill(this.DataSet);
+            }
+        }
+
+        public override void SetDataAsync(string storageName, PermissionData permissionData)
+        {
+            base.SetDataAsync(storageName, permissionData);
+
+            using (var conn = this.GetConnection())
+            using (var adapter = this.GetAdapter(SelectCommandText, conn))
+            using (this.GetCommandBuilder(adapter))
+            {
+                adapter.Update(this.DataSet);
+            }
+        }
+
+        public abstract TDbConnection GetConnection();
+        public abstract TDataAdapter GetAdapter(string selectCommandText, TDbConnection connection);
+        public abstract DbCommandBuilder GetCommandBuilder(TDataAdapter adapter);
+    }
+
     public abstract class DatabasePermissionProvider : IPermissionProvider
     {
         protected const string Username = "Username";
