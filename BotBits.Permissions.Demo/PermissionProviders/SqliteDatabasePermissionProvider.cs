@@ -10,7 +10,7 @@ namespace BotBits.Permissions.Demo.PermissionProviders
         public SQLiteDatabasePermissionProvider(string connectionString)
         {
             this._connectionString = connectionString;
-            using (var conn = this.GetConnection())
+            using (var conn = new SQLiteConnection(this._connectionString))
             {
                 conn.Open();
                 using (var cmd = new SQLiteCommand(
@@ -28,16 +28,11 @@ namespace BotBits.Permissions.Demo.PermissionProviders
             }
         }
 
-        public override void GetDataAsync(string storageName, Action<PermissionData> callback)
-        {
-            base.GetDataAsync(storageName, callback);
-        }
-
         public override void SetDataAsync(string storageName, PermissionData permissionData)
         {
             base.SetDataAsync(storageName, permissionData);
 
-            using (var conn = this.GetConnection())
+            using (var conn = new SQLiteConnection(this._connectionString))
             using (var adapter = this.GetAdapter(conn))
             using (new SQLiteCommandBuilder(adapter))
             {
@@ -45,11 +40,6 @@ namespace BotBits.Permissions.Demo.PermissionProviders
             }
         }
         
-        private SQLiteConnection GetConnection()
-        {
-            return new SQLiteConnection(this._connectionString);
-        }
-
         private SQLiteDataAdapter GetAdapter(SQLiteConnection connection)
         {
             return new SQLiteDataAdapter("SELECT * FROM BotBitsUsers", connection);

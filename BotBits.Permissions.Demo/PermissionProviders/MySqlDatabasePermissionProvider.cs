@@ -10,7 +10,7 @@ namespace BotBits.Permissions.Demo.PermissionProviders
         public MySqlDatabasePermissionProvider(string connectionString)
         {
             this._connectionString = connectionString;
-            using (var conn = this.GetConnection())
+            using (var conn = new MySqlConnection(this._connectionString))
             {
                 conn.Open();
                 using (var cmd = new MySqlCommand(
@@ -28,26 +28,16 @@ namespace BotBits.Permissions.Demo.PermissionProviders
             }
         }
 
-        public override void GetDataAsync(string storageName, Action<PermissionData> callback)
-        {
-            base.GetDataAsync(storageName, callback);
-        }
-
         public override void SetDataAsync(string storageName, PermissionData permissionData)
         {
             base.SetDataAsync(storageName, permissionData);
 
-            using (var conn = this.GetConnection())
+            using (var conn = new MySqlConnection(this._connectionString))
             using (var adapter = this.GetAdapter(conn))
             using (new MySqlCommandBuilder(adapter))
             {
                 adapter.Update(this.DataSet);
             }
-        }
-
-        private MySqlConnection GetConnection()
-        {
-            return new MySqlConnection(this._connectionString);
         }
 
         private MySqlDataAdapter GetAdapter(MySqlConnection connection)
