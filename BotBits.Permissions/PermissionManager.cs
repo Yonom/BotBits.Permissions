@@ -5,7 +5,7 @@ namespace BotBits.Permissions
 {
     public sealed class PermissionManager : EventListenerPackage<PermissionManager>
     {
-        [EventListener(EventPriority.High)]
+        [EventListener(EventPriority.Highest)]
         private void OnJoin(JoinEvent e)
         {
             e.Player.MetadataChanged +=
