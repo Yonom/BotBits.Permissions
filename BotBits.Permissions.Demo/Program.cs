@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using BotBits.ChatExtras;
+﻿using BotBits.ChatExtras;
 using BotBits.Commands;
-using BotBits.Events;
+using BotBits.Permissions.Demo.PermissionProviders;
 
 namespace BotBits.Permissions.Demo
 {
@@ -19,7 +16,8 @@ namespace BotBits.Permissions.Demo
             CommandLoader.Of(bot).LoadStatic<Program>();
 
             ChatExtrasExtension.LoadInto(bot, new CakeChatSyntaxProvider("Bot"));
-            PermissionsExtension.LoadInto(bot, Group.Moderator, new SimplePermissionProvider("processor"));
+            PermissionsExtension.LoadInto(bot, Group.Moderator, 
+                new SQLiteDatabasePermissionProvider("Data Source=test.db;Version=3;"));
 
             // Login
             ConnectionManager.Of(bot)
@@ -28,16 +26,6 @@ namespace BotBits.Permissions.Demo
 
             while (true)
                 CommandManager.Of(bot).ReadNextConsoleCommand();
-        }
-
-        
-        [EventListener]
-        static void OnJoin(JoinEvent e)
-        {
-            if (e.Username == "processor")
-            {
-                e.Player.SetGroup(Group.Admin);
-            }
         }
 
         [Command(0, "hi")]
