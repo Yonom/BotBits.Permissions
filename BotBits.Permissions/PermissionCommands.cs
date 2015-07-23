@@ -60,7 +60,7 @@ namespace BotBits.Permissions
                     this.SetPermissions(e.Player.Username, new PermissionData(Group.User));
                 } else if (Room.Of(this.BotBits).AccessRight == AccessRight.Owner)
                 {
-                    //e.Player.Kick("Banned. {0}", GetBanString(e.Player.GetPermissionData()));
+                    e.Player.Kick("Banned. {0}", GetBanString(e.Player.GetPermissionData()));
                 }
             }
         }

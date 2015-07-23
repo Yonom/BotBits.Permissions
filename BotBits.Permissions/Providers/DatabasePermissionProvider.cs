@@ -27,24 +27,30 @@ namespace BotBits.Permissions
             this.DataTable.PrimaryKey = new[] {this.DataTable.Columns[Username]};
         }
 
-        private DataRow AddOrUpdate(string username)
+        private void AddOrUpdate(string username, Action<DataRow> callback)
         {
             var row = this.DataTable.Rows.Find(username);
             if (row == null)
             {
                 row = this.DataTable.NewRow();
+                callback(row);
                 this.DataTable.Rows.Add(row);
             }
-            return row;
+            else
+            {
+                callback(row);
+            }
         }
 
         public virtual void SetDataAsync(string storageName, PermissionData permissionData)
         {
-            DataRow row = AddOrUpdate(storageName);
-            row[Username] = storageName;
-            row[Group] = permissionData.Group;
-            row[BanReason] = permissionData.BanReason;
-            row[BanTimeout] = permissionData.BanTimeout.Ticks;
+            AddOrUpdate(storageName, row =>
+            {
+                row[Username] = storageName;
+                row[Group] = permissionData.Group;
+                row[BanReason] = permissionData.BanReason;
+                row[BanTimeout] = permissionData.BanTimeout.Ticks;
+            });
         }
 
         public virtual void GetDataAsync(string storageName, Action<PermissionData> callback)
