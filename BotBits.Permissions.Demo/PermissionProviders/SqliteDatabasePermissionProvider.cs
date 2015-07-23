@@ -6,16 +6,14 @@ namespace BotBits.Permissions.Demo.PermissionProviders
 {
     public class SQLiteDatabasePermissionProvider : SqlDatabasePermissionProvider<SQLiteConnection, SQLiteDataAdapter>
     {
-        private readonly string _connectionString;
-
-        public SQLiteDatabasePermissionProvider(string connectionString)
+        public SQLiteDatabasePermissionProvider(string connectionString) 
+            : base(connectionString)
         {
-            this._connectionString = connectionString;
         }
 
-        public override SQLiteConnection GetConnection()
+        public override SQLiteConnection GetConnection(string connectionString)
         {
-            return new SQLiteConnection(this._connectionString);
+            return new SQLiteConnection(connectionString);
         }
 
         public override SQLiteDataAdapter GetAdapter(string selectCommandText, SQLiteConnection connection)

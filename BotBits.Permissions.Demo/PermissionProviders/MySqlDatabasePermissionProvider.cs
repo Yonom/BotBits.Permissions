@@ -6,16 +6,14 @@ namespace BotBits.Permissions.Demo.PermissionProviders
 {
     public class MySqlDatabasePermissionProvider : SqlDatabasePermissionProvider<MySqlConnection, MySqlDataAdapter>
     {
-        private readonly string _connectionString;
-
         public MySqlDatabasePermissionProvider(string connectionString)
+            : base(connectionString)
         {
-            this._connectionString = connectionString;
         }
 
-        public override MySqlConnection GetConnection()
+        public override MySqlConnection GetConnection(string connectionString)
         {
-            return new MySqlConnection(this._connectionString);
+            return new MySqlConnection(connectionString);
         }
 
         public override MySqlDataAdapter GetAdapter(string selectCommandText, MySqlConnection connection)

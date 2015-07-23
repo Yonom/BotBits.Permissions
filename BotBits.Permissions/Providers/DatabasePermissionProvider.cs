@@ -7,14 +7,12 @@ namespace BotBits.Permissions
 {
     public class MsSqlDatabasePermissionProvider : SqlDatabasePermissionProvider<SqlConnection, SqlDataAdapter>
     {
-        public string ConnectionString { get; private set; }
-
-        public MsSqlDatabasePermissionProvider(string connectionString)
+        public MsSqlDatabasePermissionProvider(string connectionString) 
+            : base(connectionString)
         {
-            this.ConnectionString = connectionString;
         }
 
-        public override SqlConnection GetConnection()
+        public override SqlConnection GetConnection(string connectionString)
         {
             return new SqlConnection(this.ConnectionString);
         }
@@ -33,11 +31,13 @@ namespace BotBits.Permissions
     public abstract class SqlDatabasePermissionProvider<TDbConnection, TDataAdapter> : DatabasePermissionProvider 
         where TDbConnection : DbConnection where TDataAdapter : DataAdapter
     {
+        public string ConnectionString { get; private set; }
         private const string SelectCommandText = "SELECT * FROM BotBitsUsers";
 
-        protected SqlDatabasePermissionProvider()
+        protected SqlDatabasePermissionProvider(string connectionString)
         {
-            using (var conn = this.GetConnection())
+            this.ConnectionString = connectionString;
+            using (var conn = this.GetConnection(ConnectionString))
             {
                 conn.Open();
                 using (var cmd = conn.CreateCommand())
@@ -62,7 +62,7 @@ namespace BotBits.Permissions
         {
             base.SetDataAsync(storageName, permissionData);
 
-            using (var conn = this.GetConnection())
+            using (var conn = this.GetConnection(ConnectionString))
             using (var adapter = this.GetAdapter(SelectCommandText, conn))
             using (this.GetCommandBuilder(adapter))
             {
@@ -70,7 +70,7 @@ namespace BotBits.Permissions
             }
         }
 
-        public abstract TDbConnection GetConnection();
+        public abstract TDbConnection GetConnection(string connectionString);
         public abstract TDataAdapter GetAdapter(string selectCommandText, TDbConnection connection);
         public abstract DbCommandBuilder GetCommandBuilder(TDataAdapter adapter);
     }
