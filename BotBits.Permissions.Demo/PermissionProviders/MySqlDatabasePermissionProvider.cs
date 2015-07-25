@@ -6,8 +6,8 @@ namespace BotBits.Permissions.Demo.PermissionProviders
 {
     public class MySqlDatabasePermissionProvider : SqlDatabasePermissionProvider<MySqlConnection, MySqlDataAdapter>
     {
-        public MySqlDatabasePermissionProvider(string connectionString)
-            : base(connectionString)
+        public MySqlDatabasePermissionProvider(string connectionString, string tableName)
+            : base(connectionString, tableName)
         {
         }
 

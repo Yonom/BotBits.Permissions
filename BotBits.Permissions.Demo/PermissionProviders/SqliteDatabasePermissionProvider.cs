@@ -6,8 +6,8 @@ namespace BotBits.Permissions.Demo.PermissionProviders
 {
     public class SQLiteDatabasePermissionProvider : SqlDatabasePermissionProvider<SQLiteConnection, SQLiteDataAdapter>
     {
-        public SQLiteDatabasePermissionProvider(string connectionString) 
-            : base(connectionString)
+        public SQLiteDatabasePermissionProvider(string connectionString, string tableName)
+            : base(connectionString, tableName)
         {
         }
 

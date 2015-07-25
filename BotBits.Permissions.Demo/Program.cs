@@ -15,9 +15,9 @@ namespace BotBits.Permissions.Demo
             CommandsExtension.LoadInto(bot, '!');
             CommandLoader.Of(bot).LoadStatic<Program>();
 
-            ChatExtrasExtension.LoadInto(bot, new CakeChatSyntaxProvider("Bot"));
+            ChatFormatsExtension.LoadInto(bot, new CakeChatSyntaxProvider("Bot"));
             PermissionsExtension.LoadInto(bot, Group.Moderator, 
-                new SQLiteDatabasePermissionProvider("Data Source=test.db;Version=3;"));
+                new SQLiteDatabasePermissionProvider("Data Source=test.db;Version=3;", "BotBitsUsers"));
 
             // Login
             ConnectionManager.Of(bot)

@@ -44,13 +44,13 @@ namespace BotBits.Permissions
                 e.Handled = false;
         }
 
-        [EventListener(EventPriority.High)]
+        [EventListener]
         private void OnJoin(JoinEvent e)
         {
             this.Provider.GetDataAsync(e.Player.GetDatabaseName(), e.Player.SetPermissionData);
         }
 
-        [EventListener(EventPriority.High)]
+        [EventListener]
         private void OnPermission(PermissionEvent e)
         {
             if (e.NewPermission == Group.Banned)
