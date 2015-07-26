@@ -33,14 +33,19 @@ namespace BotBits.Permissions
         {
             try
             {
-                if (e.Source.ToPermissionInvokeSource().Group <= MinRespondingGroup) return;
+                if (e.Source.ToPermissionInvokeSource().Group <= MinRespondingGroup)
+                {
+                    if (e.Exception is InvalidInvokeOriginCommandException ||
+                        e.Exception is InvalidInvokeSourceCommandException)
+                        e.Handled = true;
+                    return;
+                };
             }
             catch (InvalidInvokeSourceCommandException) { }
 
             
-            if (e.Exception is UnknownCommandException)
-                e.Handled = false;
-            if (e.Exception is AccessDeniedCommandException)
+            if (e.Exception is UnknownCommandException || 
+                e.Exception is AccessDeniedCommandException)
                 e.Handled = false;
         }
 
