@@ -34,7 +34,7 @@ namespace BotBits.Permissions
                         "`" + Username + "` VARCHAR(50), " +
                         "`" + Group + "` INTEGER, " +
                         "`" + BanReason + "` TEXT, " +
-                        "`" + BanTimeout + "` INTEGER, " +
+                        "`" + BanTimeout + "` BIGINT, " +
                         "PRIMARY KEY(Username) " +
                         ");";
                     cmd.ExecuteNonQuery();
