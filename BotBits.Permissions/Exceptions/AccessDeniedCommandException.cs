@@ -11,17 +11,17 @@ namespace BotBits.Permissions
     /// </summary>
     public class AccessDeniedCommandException : CommandException
     {
-        public AccessDeniedCommandException() : base(true)
+        public AccessDeniedCommandException()
         {
         }
 
         public AccessDeniedCommandException(string message)
-            : base(message, true)
+            : base(message)
         {
         }
 
         public AccessDeniedCommandException(string message, Exception innerException)
-            : base(message, innerException, true)
+            : base(message, innerException)
         {
         }
     }

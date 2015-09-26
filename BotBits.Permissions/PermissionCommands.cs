@@ -37,6 +37,7 @@ namespace BotBits.Permissions
                 {
                     if (e.Exception is InvalidInvokeOriginCommandException ||
                         e.Exception is InvalidInvokeSourceCommandException ||
+                        e.Exception is AccessDeniedCommandException ||
                         e.Exception is SyntaxCommandException)
                         e.Handled = true;
                     return;
@@ -44,9 +45,7 @@ namespace BotBits.Permissions
             }
             catch (InvalidInvokeSourceCommandException) { }
 
-            
-            if (e.Exception is UnknownCommandException || 
-                e.Exception is AccessDeniedCommandException)
+             if (e.Exception is UnknownCommandException)
                 e.Handled = false;
         }
 
