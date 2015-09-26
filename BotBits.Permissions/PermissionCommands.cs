@@ -36,7 +36,8 @@ namespace BotBits.Permissions
                 if (e.Source.ToPermissionInvokeSource().Group < MinRespondingGroup)
                 {
                     if (e.Exception is InvalidInvokeOriginCommandException ||
-                        e.Exception is InvalidInvokeSourceCommandException)
+                        e.Exception is InvalidInvokeSourceCommandException ||
+                        e.Exception is SyntaxCommandException)
                         e.Handled = true;
                     return;
                 };
