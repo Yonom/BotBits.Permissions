@@ -1,10 +1,26 @@
 ﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using BotBits.Events;
 
 namespace BotBits.Permissions
 {
     public sealed class PermissionManager : EventListenerPackage<PermissionManager>
     {
+        private readonly ConcurrentDictionary<string, Group> _minPermissions = new ConcurrentDictionary<string, Group>(StringComparer.OrdinalIgnoreCase);
+
+        public void Set(string commandName, Group minPermission)
+        {
+            this._minPermissions[commandName] = minPermission;
+        }
+
+        public Group Get(string commandName)
+        {
+            Group res;
+            this._minPermissions.TryGetValue(commandName, out res);
+            return res;
+        }
+
         [EventListener(GlobalPriority.BeforeMost)]
         private void OnJoin(JoinEvent e)
         {

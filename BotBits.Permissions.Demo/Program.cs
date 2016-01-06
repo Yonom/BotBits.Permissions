@@ -20,9 +20,9 @@ namespace BotBits.Permissions.Demo
                 new SQLiteDatabasePermissionProvider("Data Source=test.db;Version=3;", "BotBitsUsers"));
 
             // Login
-            ConnectionManager.Of(bot)
-                .GuestLogin()
-                .CreateJoinRoom("PWAARLDluVa0I");
+            Login.Of(bot)
+                .AsGuest()
+                .CreateJoinRoom("PW01");
 
             while (true)
                 CommandManager.Of(bot).ReadNextConsoleCommand();

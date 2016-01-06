@@ -29,7 +29,7 @@ namespace BotBits.Permissions
         }
 
         [EventListener]
-        private void OnCommandException(CommandExceptionEvent e)
+        private void On(CommandExceptionEvent e)
         {
             try
             {
@@ -50,13 +50,19 @@ namespace BotBits.Permissions
         }
 
         [EventListener]
-        private void OnJoin(JoinEvent e)
+        private void On(InitEvent e)
         {
             this.Provider.GetDataAsync(e.Player.GetDatabaseName(), e.Player.SetPermissionData);
         }
 
         [EventListener]
-        private void OnPermission(PermissionEvent e)
+        private void On(JoinEvent e)
+        {
+            this.Provider.GetDataAsync(e.Player.GetDatabaseName(), e.Player.SetPermissionData);
+        }
+
+        [EventListener]
+        private void On(PermissionEvent e)
         {
             if (e.NewPermission == Group.Banned)
             {
@@ -94,12 +100,13 @@ namespace BotBits.Permissions
         private void SetPermissions(string username, PermissionData data)
         {
             var players = Players.Of(this.BotBits).FromUsername(username);
+            var databaseName = PlayerExtensions.GetDatabaseName(username);
             foreach (var player in players)
             {
                 player.SetPermissionData(data);
             }
 
-            this.Provider.SetDataAsync(username, data);
+            this.Provider.SetDataAsync(databaseName, data);
         }
 
         private void GetRankAsync(IInvokeSource source, string username, Action<PermissionData> callback)
@@ -111,7 +118,7 @@ namespace BotBits.Permissions
             }
             else
             {
-                Provider.GetDataAsync(PlayerExtensions.GetDatabaseName(username),
+                this.Provider.GetDataAsync(PlayerExtensions.GetDatabaseName(username),
                     data =>
                     {
                         try
@@ -128,7 +135,7 @@ namespace BotBits.Permissions
 
         private static string GetRankString(string username, PermissionData data)
         {
-            var res = String.Format("{0} is {1}.", username.ToUpper(), data.Group.ToString().ToLower());
+            var res = $"{username.ToUpper()} is {data.Group.ToString().ToLower()}.";
             if (data.Group == Group.Banned)
                 res += " " + GetBanString(data);
             return res;
