@@ -69,7 +69,7 @@ namespace BotBits.Permissions
                 if (e.Player.GetBanTimeout() != default(DateTime) && e.Player.GetBanTimeout() < DateTime.UtcNow)
                 {
                     this.SetPermissions(e.Player.Username, new PermissionData(Group.User));
-                } else if (Room.Of(this.BotBits).AccessRight == AccessRight.Owner)
+                } else if (Actions.Of(this.BotBits).AccessRight == AccessRight.Owner)
                 {
                     e.Player.Kick("Banned. {0}", GetBanString(e.Player.GetPermissionData()));
                 }

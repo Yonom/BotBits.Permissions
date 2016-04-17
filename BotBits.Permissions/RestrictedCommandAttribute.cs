@@ -15,7 +15,7 @@ namespace BotBits.Permissions
             this.MinGroup = minGroup;
         }
 
-        protected override Action<IInvokeSource, ParsedRequest> DoTransformations(BotBitsClient client, Command command, Action<IInvokeSource, ParsedRequest> request)
+        protected override Action<IInvokeSource, ParsedRequest> DoTransformations(BotBitsClient client, Command command, Action<IInvokeSource, ParsedRequest> callback)
         {
             foreach (var type in command.Names)
             {
@@ -25,6 +25,7 @@ namespace BotBits.Permissions
             return (source, req) =>
             {
                 PermissionManager.Of(client).Get(req.Type).RequireFor(source);
+                callback(source, req);
             };
         }
     }
