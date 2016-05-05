@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using BotBits.Commands;
 
 namespace BotBits.Permissions
 {
@@ -11,8 +12,8 @@ namespace BotBits.Permissions
     {
         private class Settings
         {
-            public Group MinRespondingGroup { get; set; }
-            public IPermissionProvider Provider { get; set; }
+            public Group MinRespondingGroup { get; }
+            public IPermissionProvider Provider { get; }
 
             public Settings(Group minRespondingGroup, IPermissionProvider provider)
             {
@@ -35,8 +36,11 @@ namespace BotBits.Permissions
             return LoadInto(client, null);
         }
         
-        public static bool LoadInto(BotBitsClient client, Group minRespondingGroup, IPermissionProvider provider = null)
+        public static bool LoadInto(BotBitsClient client, Group minRespondingGroup, IPermissionProvider provider)
         {
+            if (!CommandsExtension.IsLoadedInto(client))
+                throw new InvalidOperationException("You need to load CommandsExtension before you can enable permission commands!");
+
             return LoadInto(client, new Settings(minRespondingGroup, provider));
         }
     }

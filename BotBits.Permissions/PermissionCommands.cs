@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using System.Linq;
 using System.Threading;
 using BotBits.ChatExtras;
@@ -33,7 +32,7 @@ namespace BotBits.Permissions
         {
             try
             {
-                if (e.Source.ToPermissionInvokeSource().Group < MinRespondingGroup)
+                if (e.Source.ToPermissionInvokeSource().Group < this.MinRespondingGroup)
                 {
                     if (e.Exception is InvalidInvokeOriginCommandException ||
                         e.Exception is InvalidInvokeSourceCommandException ||
@@ -41,7 +40,7 @@ namespace BotBits.Permissions
                         e.Exception is SyntaxCommandException)
                         e.Handled = true;
                     return;
-                };
+                }
             }
             catch (InvalidInvokeSourceCommandException) { }
 
@@ -203,10 +202,10 @@ namespace BotBits.Permissions
             }
         }
 
-        [Command(0, "getrank", Usage = "[username]")]
+        [RestrictedCommand(Group.User, 0, "getrank", Usage = "[username]")]
         private void GetRankCommand(IInvokeSource source, ParsedRequest request)
         {
-            MinRespondingGroup.RequireFor(source);
+            this.MinRespondingGroup.RequireFor(source);
 
             var respond = new Action<string, PermissionData>((username, data) => 
                 source.Reply(GetRankString(username, data)));
@@ -223,36 +222,38 @@ namespace BotBits.Permissions
             }
         }
 
-        [Command(1, "admin", Usage = "username")]
+        [RestrictedCommand(Group.External, 1, "admin", Usage = "username")]
         private void AdminCommand(IInvokeSource source, ParsedRequest request)
         {
-            MinRespondingGroup.RequireFor(source);
-            Group.External.RequireFor(source);
+            this.MinRespondingGroup.RequireFor(source);
+
             this.CompareAndSetPermissions(source, request, 
                 new PermissionData(Group.Admin));
         }
 
-        [Command(1, "op", Usage = "username")]
+        [RestrictedCommand(Group.Admin, 1, "op", Usage = "username")]
         private void OpCommand(IInvokeSource source, ParsedRequest request)
         {
-            MinRespondingGroup.RequireFor(source);
-            Group.Admin.RequireFor(source); 
+            this.MinRespondingGroup.RequireFor(source);
+
             this.CompareAndSetPermissions(source, request, 
                 new PermissionData(Group.Operator));
             }
 
-        [Command(1, "mod", Usage = "username")]
+        [RestrictedCommand(Group.Operator, 1, "mod", Usage = "username")]
         private void ModCommand(IInvokeSource source, ParsedRequest request)
         {
-            MinRespondingGroup.RequireFor(source);
-            Group.Operator.RequireFor(source); 
+            this.MinRespondingGroup.RequireFor(source);
+
             this.CompareAndSetPermissions(source, request, 
                 new PermissionData(Group.Moderator));
         }
 
-        [Command(1, "tempmod", Usage = "username")]
+        [RestrictedCommand(Group.Operator, 1, "tempmod", Usage = "username")]
         private void TempModCommand(IInvokeSource source, ParsedRequest request)
         {
+            this.MinRespondingGroup.RequireFor(source);
+
             var username = request.GetUsernameIn(this.BotBits, 0);
             this.ComparePermissions(source, username, () =>
             {
@@ -266,48 +267,46 @@ namespace BotBits.Permissions
             });
         }
 
-        [Command(1, "trust", Usage = "username")]
+        [RestrictedCommand(Group.Operator, 1, "trust", Usage = "username")]
         private void TrustCommand(IInvokeSource source, ParsedRequest request)
         {
-            MinRespondingGroup.RequireFor(source);
-            Group.Operator.RequireFor(source);
+            this.MinRespondingGroup.RequireFor(source);
+
             this.CompareAndSetPermissions(source, request, 
                 new PermissionData(Group.Trusted));
         }
 
-        [Command(1, "user", Usage = "username")]
+        [RestrictedCommand(Group.Operator, 1, "user", Usage = "username")]
         private void UserCommand(IInvokeSource source, ParsedRequest request)
         {
-            MinRespondingGroup.RequireFor(source);
-            Group.Operator.RequireFor(source);
+            this.MinRespondingGroup.RequireFor(source);
+
             this.CompareAndSetPermissions(source, request,
                 new PermissionData(Group.User));
         }
 
-        [Command(1, "limit", Usage = "username")]
+        [RestrictedCommand(Group.Operator, 1, "limit", Usage = "username")]
         private void LimitCommand(IInvokeSource source, ParsedRequest request)
         {
-            MinRespondingGroup.RequireFor(source);
-            Group.Operator.RequireFor(source);
+            this.MinRespondingGroup.RequireFor(source);
+
             this.CompareAndSetPermissions(source, request,
                 new PermissionData(Group.Limited));
         }
         
-        [Command(1, "ban", Usage = "username [reason]")]
+        [RestrictedCommand(Group.Operator, 1, "ban", Usage = "username [reason]")]
         private void BanCommand(IInvokeSource source, ParsedRequest request)
         {
-            MinRespondingGroup.RequireFor(source);
-            Group.Operator.RequireFor(source);
+            this.MinRespondingGroup.RequireFor(source);
 
             this.CompareAndSetPermissions(source, request,
                 new PermissionData(Group.Banned, request.GetTrail(1), default(DateTime)));
         }
 
-        [Command(2, "tempban", Usage = "username duration [reason]")]
+        [RestrictedCommand(Group.Operator, 2, "tempban", Usage = "username duration [reason]")]
         private void TempBanCommand(IInvokeSource source, ParsedRequest request)
         {
-            MinRespondingGroup.RequireFor(source);
-            Group.Operator.RequireFor(source);
+            this.MinRespondingGroup.RequireFor(source);
 
             DateTime timeout;
             try

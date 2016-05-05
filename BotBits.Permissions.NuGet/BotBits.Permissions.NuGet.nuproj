@@ -19,7 +19,7 @@
   <Import Project="$(NuProjPath)\NuProj.props" Condition="Exists('$(NuProjPath)\NuProj.props')" />
   <PropertyGroup Label="Configuration">
     <Id>BotBits.Permissions</Id>
-    <Version>2.0.2</Version>
+    <Version>2.1.1</Version>
     <Title>BotBits.Permissions</Title>
     <Authors>Younom</Authors>
     <Owners>Younom</Owners>

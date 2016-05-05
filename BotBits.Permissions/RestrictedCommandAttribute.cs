@@ -17,16 +17,21 @@ namespace BotBits.Permissions
 
         protected override Action<IInvokeSource, ParsedRequest> DoTransformations(BotBitsClient client, Command command, Action<IInvokeSource, ParsedRequest> callback)
         {
-            foreach (var type in command.Names)
-            {
-                PermissionManager.Of(client).Set(type, this.MinGroup);
-            }
-
             return (source, req) =>
             {
-                PermissionManager.Of(client).Get(req.Type).RequireFor(source);
+                PermissionManager.Of(client).Get(command).RequireFor(source);
                 callback(source, req);
             };
+        }
+
+        protected override void OnAdd(BotBitsClient client, Command command)
+        {
+            PermissionManager.Of(client).Set(command, this.MinGroup);
+        }
+
+        protected override void OnRemove(BotBitsClient client, Command command)
+        {
+            PermissionManager.Of(client).Remove(command);
         }
     }
 }
