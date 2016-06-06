@@ -41,7 +41,7 @@ namespace BotBits.Permissions
 
         public static string GetDatabaseName(string username)
         {
-            if (PlayerUtils.IsGuest(username)) return "-guest-";
+            if (Player.IsGuest(username)) return "-guest-";
             return username;
         }
 
