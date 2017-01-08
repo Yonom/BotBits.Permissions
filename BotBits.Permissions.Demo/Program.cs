@@ -4,9 +4,9 @@ using BotBits.Permissions.Demo.PermissionProviders;
 
 namespace BotBits.Permissions.Demo
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             var bot = new BotBitsClient();
 
@@ -16,7 +16,7 @@ namespace BotBits.Permissions.Demo
             CommandLoader.Of(bot).LoadStatic<Program>();
 
             ChatFormatsExtension.LoadInto(bot, new CakeChatSyntaxProvider("Bot"));
-            PermissionsExtension.LoadInto(bot, Group.Moderator, 
+            PermissionsExtension.WithCommandsLoadInto(bot, Group.Moderator,
                 new SQLiteDatabasePermissionProvider("Data Source=test.db;Version=3;", "BotBitsUsers"));
 
             // Login
@@ -24,12 +24,11 @@ namespace BotBits.Permissions.Demo
                 .AsGuest()
                 .CreateJoinRoom("PW01");
 
-            while (true)
-                CommandManager.Of(bot).ReadNextConsoleCommand();
+            while (true) CommandManager.Of(bot).ReadNextConsoleCommand();
         }
 
         [Command(0, "hi")]
-        static void HiCommand(IInvokeSource source, ParsedRequest request)
+        private static void HiCommand(IInvokeSource source, ParsedRequest request)
         {
             Group.Moderator.RequireFor(source);
 

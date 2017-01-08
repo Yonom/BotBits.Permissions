@@ -9,8 +9,6 @@ namespace BotBits.Permissions
         protected const string Group = "Group";
         protected const string BanReason = "BanReason";
         protected const string BanTimeout = "BanTimeout";
-        protected DataSet DataSet { get; private set; }
-        private DataTable DataTable { get { return this.DataSet.Tables["Table"]; } }
 
         protected DatabasePermissionProvider()
         {
@@ -20,7 +18,36 @@ namespace BotBits.Permissions
             this.DataTable.Columns.Add(new DataColumn(Group, typeof(int)));
             this.DataTable.Columns.Add(new DataColumn(BanReason, typeof(string)));
             this.DataTable.Columns.Add(new DataColumn(BanTimeout, typeof(long)));
-            this.DataTable.PrimaryKey = new[] {this.DataTable.Columns[Username]};
+            this.DataTable.PrimaryKey = new[] { this.DataTable.Columns[Username] };
+        }
+
+        protected DataSet DataSet { get; }
+
+        private DataTable DataTable
+        {
+            get { return this.DataSet.Tables["Table"]; }
+        }
+
+        public virtual void SetDataAsync(string storageName, PermissionData permissionData)
+        {
+            this.AddOrUpdate(storageName, row =>
+            {
+                row[Username] = storageName;
+                row[Group] = permissionData.Group;
+                row[BanReason] = permissionData.BanReason;
+                row[BanTimeout] = permissionData.BanTimeout.Ticks;
+            });
+        }
+
+        public virtual void GetDataAsync(string storageName, Action<PermissionData> callback)
+        {
+            var row = this.DataTable.Rows.Find(storageName);
+            callback(row != null
+                ? new PermissionData(
+                    (Group)row.GetValue<int>(Group),
+                    row.GetValue<string>(BanReason),
+                    new DateTime(row.GetValue<long>(BanTimeout)))
+                : new PermissionData());
         }
 
         private void AddOrUpdate(string username, Action<DataRow> callback)
@@ -36,28 +63,6 @@ namespace BotBits.Permissions
             {
                 callback(row);
             }
-        }
-
-        public virtual void SetDataAsync(string storageName, PermissionData permissionData)
-        {
-            AddOrUpdate(storageName, row =>
-            {
-                row[Username] = storageName;
-                row[Group] = permissionData.Group;
-                row[BanReason] = permissionData.BanReason;
-                row[BanTimeout] = permissionData.BanTimeout.Ticks;
-            });
-        }
-
-        public virtual void GetDataAsync(string storageName, Action<PermissionData> callback)
-        {
-            var row = this.DataTable.Rows.Find(storageName);
-            callback(row != null
-                ? new PermissionData(
-                    (Group)row.GetValue<int>(Group), 
-                    row.GetValue<string>(BanReason),
-                    new DateTime(row.GetValue<long>(BanTimeout)))
-                : new PermissionData());
         }
     }
 }

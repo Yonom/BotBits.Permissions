@@ -9,6 +9,11 @@ namespace BotBits.Permissions
     {
         private readonly ConcurrentDictionary<Command, Group> _minPermissions = new ConcurrentDictionary<Command, Group>();
 
+        [Obsolete("Invalid to use \"new\" on this class. Use the static .Of(botBits) method instead.", true)]
+        public PermissionManager()
+        {
+        }
+
         public void Set(Command command, Group minPermission)
         {
             this._minPermissions[command] = minPermission;

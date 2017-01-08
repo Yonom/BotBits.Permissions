@@ -6,16 +6,9 @@ namespace BotBits.Permissions
     public abstract class SqlDatabasePermissionProvider<TDbConnection, TDataAdapter> : DatabasePermissionProvider, IDisposable
         where TDbConnection : DbConnection where TDataAdapter : DataAdapter
     {
-        private readonly TDbConnection _conn;
         private readonly TDataAdapter _adapter;
-        private DbCommandBuilder _commandBuilder;
-        public string ConnectionString { get; private set; }
-        public string TableName { get; private set; }
-
-        private string SelectCommandText
-        {
-            get { return "SELECT * FROM " + TableName; }
-        }
+        private readonly TDbConnection _conn;
+        private readonly DbCommandBuilder _commandBuilder;
 
         protected SqlDatabasePermissionProvider(string connectionString, string tableName)
         {
@@ -40,7 +33,7 @@ namespace BotBits.Permissions
                     cmd.ExecuteNonQuery();
                 }
 
-                this._adapter = this.GetAdapter(SelectCommandText, this._conn);
+                this._adapter = this.GetAdapter(this.SelectCommandText, this._conn);
                 this._commandBuilder = this.GetCommandBuilder(this._adapter);
                 this._adapter.Fill(this.DataSet);
             }
@@ -48,6 +41,21 @@ namespace BotBits.Permissions
             {
                 this._conn.Close();
             }
+        }
+
+        public string ConnectionString { get; }
+        public string TableName { get; }
+
+        private string SelectCommandText
+        {
+            get { return "SELECT * FROM " + this.TableName; }
+        }
+
+        public void Dispose()
+        {
+            this._commandBuilder.Dispose();
+            this._adapter.Dispose();
+            this._conn.Dispose();
         }
 
         public override void SetDataAsync(string storageName, PermissionData permissionData)
@@ -59,12 +67,5 @@ namespace BotBits.Permissions
         public abstract TDbConnection GetConnection(string connectionString);
         public abstract TDataAdapter GetAdapter(string selectCommandText, TDbConnection connection);
         public abstract DbCommandBuilder GetCommandBuilder(TDataAdapter adapter);
-
-        public void Dispose()
-        {
-            this._commandBuilder.Dispose();
-            this._adapter.Dispose();
-            this._conn.Dispose();
-        }
     }
 }

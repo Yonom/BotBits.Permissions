@@ -1,25 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using BotBits.Commands;
 
 namespace BotBits.Permissions
 {
     public sealed class PermissionsExtension : Extension<PermissionsExtension>
     {
-        private class Settings
+        [Obsolete("Invalid to use \"new\" on this class. Use the static .Of(botBits) method instead.", true)]
+        public PermissionsExtension()
         {
-            public Group MinRespondingGroup { get; }
-            public IPermissionProvider Provider { get; }
-
-            public Settings(Group minRespondingGroup, IPermissionProvider provider)
-            {
-                this.MinRespondingGroup = minRespondingGroup;
-                this.Provider = provider;
-            }
         }
 
         protected override void Initialize(BotBitsClient client, object args)
@@ -35,13 +23,27 @@ namespace BotBits.Permissions
         {
             return LoadInto(client, null);
         }
-        
-        public static bool LoadInto(BotBitsClient client, Group minRespondingGroup, IPermissionProvider provider)
+
+        public static bool WithCommandsLoadInto(BotBitsClient client, Group minRespondingGroup, IPermissionProvider provider)
         {
+            if (!ChatExtrasServices.IsAvailable())
+                throw new InvalidOperationException("BotBits.ChatExtras must be installed for permission commands to work.");
             if (!CommandsExtension.IsLoadedInto(client))
-                throw new InvalidOperationException("You need to load CommandsExtension before you can enable permission commands!");
+                throw new InvalidOperationException("BotBits.CommandsExtension must be loaded for permission commands to work.");
 
             return LoadInto(client, new Settings(minRespondingGroup, provider));
+        }
+
+        private class Settings
+        {
+            public Settings(Group minRespondingGroup, IPermissionProvider provider)
+            {
+                this.MinRespondingGroup = minRespondingGroup;
+                this.Provider = provider;
+            }
+
+            public Group MinRespondingGroup { get; }
+            public IPermissionProvider Provider { get; }
         }
     }
 }

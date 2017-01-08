@@ -10,6 +10,12 @@ namespace BotBits.Permissions
     internal sealed class PermissionCommands : Package<PermissionCommands>
     {
         private int _enabled;
+
+        [Obsolete("Invalid to use \"new\" on this class. Use the static .Of(botBits) method instead.", true)]
+        public PermissionCommands()
+        {
+        }
+
         internal Group MinRespondingGroup { get; private set; }
         internal IPermissionProvider Provider { get; private set; }
 
@@ -37,15 +43,15 @@ namespace BotBits.Permissions
                     if (e.Exception is InvalidInvokeOriginCommandException ||
                         e.Exception is InvalidInvokeSourceCommandException ||
                         e.Exception is AccessDeniedCommandException ||
-                        e.Exception is SyntaxCommandException)
-                        e.Handled = true;
+                        e.Exception is SyntaxCommandException) e.Handled = true;
                     return;
                 }
             }
-            catch (InvalidInvokeSourceCommandException) { }
+            catch (InvalidInvokeSourceCommandException)
+            {
+            }
 
-             if (e.Exception is UnknownCommandException)
-                e.Handled = false;
+            if (e.Exception is UnknownCommandException) e.Handled = false;
         }
 
         [EventListener]
@@ -68,7 +74,8 @@ namespace BotBits.Permissions
                 if (e.Player.GetBanTimeout() != default(DateTime) && e.Player.GetBanTimeout() < DateTime.UtcNow)
                 {
                     this.SetPermissions(e.Player.Username, new PermissionData(Group.User));
-                } else if (Actions.Of(this.BotBits).AccessRight == AccessRight.Owner)
+                }
+                else if (Actions.Of(this.BotBits).AccessRight == AccessRight.Owner)
                 {
                     e.Player.Kick("Banned. {0}", GetBanString(e.Player.GetPermissionData()));
                 }
@@ -79,8 +86,7 @@ namespace BotBits.Permissions
         {
             this.GetRankAsync(source, username, data =>
             {
-                if (source.GetGroup() <= data.Group)
-                    throw new AccessDeniedCommandException("The target player is higher or equally ranked.");
+                if (source.GetGroup() <= data.Group) throw new AccessDeniedCommandException("The target player is higher or equally ranked.");
 
                 callback();
             });
@@ -135,18 +141,15 @@ namespace BotBits.Permissions
         private static string GetRankString(string username, PermissionData data)
         {
             var res = $"{username.ToUpper()} is {data.Group.ToString().ToLower()}.";
-            if (data.Group == Group.Banned)
-                res += " " + GetBanString(data);
+            if (data.Group == Group.Banned) res += " " + GetBanString(data);
             return res;
         }
 
         private static string GetBanString(PermissionData data)
         {
-            var res = String.Empty;
-            if (!String.IsNullOrEmpty(data.BanReason))
-                res += "Reason: " + data.BanReason + " ";
-            if (data.BanTimeout != default(DateTime))
-                res += "Expires in: " + GetTimeLeft(data.BanTimeout);
+            var res = string.Empty;
+            if (!string.IsNullOrEmpty(data.BanReason)) res += "Reason: " + data.BanReason + " ";
+            if (data.BanTimeout != default(DateTime)) res += "Expires in: " + GetTimeLeft(data.BanTimeout);
             return res;
         }
 
@@ -160,7 +163,7 @@ namespace BotBits.Permissions
 
             var ts = yourDate - DateTime.UtcNow;
             if (ts.Ticks < 0) return "<Expired>";
-            double delta = ts.TotalSeconds;
+            var delta = ts.TotalSeconds;
 
             if (delta < 1 * MINUTE)
             {
@@ -192,14 +195,11 @@ namespace BotBits.Permissions
             }
             if (delta < 12 * MONTH)
             {
-                int months = Convert.ToInt32(Math.Floor(ts.TotalDays / 30));
+                var months = Convert.ToInt32(Math.Floor(ts.TotalDays / 30));
                 return months <= 1 ? "one month" : months + " months";
             }
-            else
-            {
-                int years = Convert.ToInt32(Math.Floor(ts.TotalDays / 365));
-                return years <= 1 ? "one year" : years + " years";
-            }
+            var years = Convert.ToInt32(Math.Floor(ts.TotalDays / 365));
+            return years <= 1 ? "one year" : years + " years";
         }
 
         [RestrictedCommand(Group.User, 0, "getrank", Usage = "[username]")]
@@ -207,7 +207,7 @@ namespace BotBits.Permissions
         {
             this.MinRespondingGroup.RequireFor(source);
 
-            var respond = new Action<string, PermissionData>((username, data) => 
+            var respond = new Action<string, PermissionData>((username, data) =>
                 source.Reply(GetRankString(username, data)));
 
             if (request.Count >= 1)
@@ -227,7 +227,7 @@ namespace BotBits.Permissions
         {
             this.MinRespondingGroup.RequireFor(source);
 
-            this.CompareAndSetPermissions(source, request, 
+            this.CompareAndSetPermissions(source, request,
                 new PermissionData(Group.Admin));
         }
 
@@ -236,16 +236,16 @@ namespace BotBits.Permissions
         {
             this.MinRespondingGroup.RequireFor(source);
 
-            this.CompareAndSetPermissions(source, request, 
+            this.CompareAndSetPermissions(source, request,
                 new PermissionData(Group.Operator));
-            }
+        }
 
         [RestrictedCommand(Group.Operator, 1, "mod", Usage = "username")]
         private void ModCommand(IInvokeSource source, ParsedRequest request)
         {
             this.MinRespondingGroup.RequireFor(source);
 
-            this.CompareAndSetPermissions(source, request, 
+            this.CompareAndSetPermissions(source, request,
                 new PermissionData(Group.Moderator));
         }
 
@@ -272,7 +272,7 @@ namespace BotBits.Permissions
         {
             this.MinRespondingGroup.RequireFor(source);
 
-            this.CompareAndSetPermissions(source, request, 
+            this.CompareAndSetPermissions(source, request,
                 new PermissionData(Group.Trusted));
         }
 
@@ -293,7 +293,7 @@ namespace BotBits.Permissions
             this.CompareAndSetPermissions(source, request,
                 new PermissionData(Group.Limited));
         }
-        
+
         [RestrictedCommand(Group.Operator, 1, "ban", Usage = "username [reason]")]
         private void BanCommand(IInvokeSource source, ParsedRequest request)
         {
@@ -311,7 +311,7 @@ namespace BotBits.Permissions
             DateTime timeout;
             try
             {
-                TimeSpan duration = TimeSpan.Parse(request.Args[1]);
+                var duration = TimeSpan.Parse(request.Args[1]);
                 timeout = DateTime.UtcNow.Add(duration);
             }
             catch (Exception ex)

@@ -10,6 +10,9 @@
       <Platform>AnyCPU</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\BotBits.Permissions\BotBits.Permissions.csproj" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>547d6a46-e6c4-477a-b774-9562164884bf</ProjectGuid>
   </PropertyGroup>
@@ -19,7 +22,7 @@
   <Import Project="$(NuProjPath)\NuProj.props" Condition="Exists('$(NuProjPath)\NuProj.props')" />
   <PropertyGroup Label="Configuration">
     <Id>BotBits.Permissions</Id>
-    <Version>2.1.1</Version>
+    <Version>3.0.3</Version>
     <Title>BotBits.Permissions</Title>
     <Authors>Younom</Authors>
     <Owners>Younom</Owners>
@@ -34,8 +37,5 @@
     <Copyright>Copyright © Sepehr Farshid</Copyright>
     <Tags>BotBits EverybodyEdits</Tags>
   </PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\BotBits.Permissions\BotBits.Permissions.csproj" />
-  </ItemGroup>
   <Import Project="$(NuProjPath)\NuProj.targets" />
 </Project>

@@ -1,5 +1,5 @@
-using System;
 using System.Data.Common;
+using System.Data.SqlClient;
 using MySql.Data.MySqlClient;
 
 namespace BotBits.Permissions.Demo.PermissionProviders

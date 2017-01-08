@@ -42,6 +42,6 @@
         /// <summary>
         ///     This rank is used to specify console-only commands; no real users will have it.
         /// </summary>
-        External = 500,
+        External = 500
     }
 }
